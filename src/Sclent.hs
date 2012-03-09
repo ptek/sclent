@@ -1,4 +1,7 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Main where
 
+import Service.CrawlerService
+
 main :: IO ()
-main = putStrLn "I am Sclent!"
+main = crawl "http://foo.bar" >>= putStrLn . show
