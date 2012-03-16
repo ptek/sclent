@@ -11,7 +11,7 @@ import Model.Crawler
 runCrawler :: (Text -> IO [Tag Text]) -> Text -> [Text] -> IO [(Text, Bool)]
 runCrawler fetcher domainToSearchFor domainsToSearchOn = mapM search domainsToSearchOn where
   search d = do
-    found <- crawl fetcher domainToSearchFor d [d] [] 3
+    found <- crawl fetcher domainToSearchFor d [d] [] 2
     return (d, found)
 
 crawl :: (Text -> IO [Tag Text]) -> Text -> Text -> [Text] -> [Text] -> Int -> IO Bool
@@ -21,5 +21,5 @@ crawl fetcher target domain sources acc depth = do
   if (findBackLink target tags)
     then return True
     else do
-    let newLinks = nub ((\\) (nub (findLocalLinks domain tags)) acc)
+    let newLinks = (nub (findLocalLinks domain tags)) \\ acc
     crawl fetcher target domain newLinks (acc ++ newLinks) (depth-1)

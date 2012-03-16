@@ -11,7 +11,7 @@ tests = [
   "runs crawler" ~: test [
      testIO (runCrawler fetcherMock1 "git.io" ["http://k.net"]) (@?= [("http://k.net",True)])
     ,testIO (runCrawler fetcherMock2 "git.io" ["http://k.net"]) (@?= [("http://k.net",True)])
-    ,testIO (runCrawler fetcherMock3 "git.io" ["http://k.net"]) (@?= [("http://k.net",True)])
+    ,testIO (runCrawler fetcherMock3 "git.io" ["http://k.net"]) (@?= [("http://k.net",False)])
     ,testIO (runCrawler fetcherMock4 "git.io" ["http://k.net"]) (@?= [("http://k.net",False)])
     ]
   ]
