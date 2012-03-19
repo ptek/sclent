@@ -19,7 +19,7 @@ fetchPage :: Text -> IO Text
 fetchPage url = catchIO (simpleHTTP (getRequest (unpack url)) >>= fetchBody) report
 
 report :: IOException -> IO Text
-report _ = return ""
+report e = putStrLn ("Problem fetching URI: "++(show e)) >> return ""
 
 fetchBody :: (Result (Response String)) -> IO Text
 fetchBody res = case lookupHeader HdrContentType (headers res) of
