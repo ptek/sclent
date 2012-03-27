@@ -14,6 +14,7 @@ executable sclent
                       ,bytestring == 0.9.1.10
                       ,download-curl == 0.1.4
                       ,HTTP == 4000.2.2
+                      ,network == 2.3.0.11
                       ,tagsoup == 0.12.6
                       ,text == 0.11.1.13
 
@@ -26,5 +27,6 @@ executable run_tests
                       ,download-curl == 0.1.4
                       ,HTTP == 4000.2.2
                       ,HUnit == 1.2.4.2
+                      ,network == 2.3.0.11
                       ,tagsoup == 0.12.6
                       ,text == 0.11.1.13

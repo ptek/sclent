@@ -7,19 +7,22 @@ import Data.List (filter)
 import Data.Text (Text(..), pack, unpack)
 import Data.Text.Encoding
 import Network.HTTP
-import Network.HTTP.Base (Response(..), catchIO)
+import Network.HTTP.Base (Request(..), Response(..), mkRequest, catchIO)
 import Network.HTTP.Headers (Header(..))
 import Network.Stream (Result)
+import Network.URI (parseURI)
 import Text.HTML.TagSoup
 
 fetchLinks :: Text -> IO [Tag Text]
 fetchLinks url = (filterLinksOnly . parseTags) <$> fetchPage url
 
 fetchPage :: Text -> IO Text
-fetchPage url = catchIO (simpleHTTP (getRequest (unpack url)) >>= fetchBody) report
+fetchPage url = case parseURI (unpack url) of
+  Nothing -> return ""
+  Just u -> catchIO (simpleHTTP (mkRequest GET u) >>= fetchBody) report
 
 report :: IOException -> IO Text
-report e = putStrLn ("Problem fetching URI: "++(show e)) >> return ""
+report e = putStrLn ("Could not get "++(show e)) >> return ""
 
 fetchBody :: (Result (Response String)) -> IO Text
 fetchBody res = case lookupHeader HdrContentType (headers res) of
