@@ -11,7 +11,7 @@ import Model.Crawler
 runCrawler :: (Text -> IO [Tag Text]) -> Text -> [Text] -> IO [(Text, Bool)]
 runCrawler fetcher domainToSearchFor domainsToSearchOn = mapM search domainsToSearchOn where
   search d = do
-    found <- crawl fetcher domainToSearchFor d [d] [] 2
+    found <- crawl fetcher domainToSearchFor d [d] [] 3
     return (d, found)
 
 crawl :: (Text -> IO [Tag Text]) -> Text -> Text -> [Text] -> [Text] -> Int -> IO Bool
