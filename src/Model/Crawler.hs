@@ -4,7 +4,7 @@ module Model.Crawler (
  ,findLocalLinks
  ) where
 
-import Data.Text (Text(..),concat,length,take)
+import Data.Text (Text(..),concat,length,take,isPrefixOf)
 import Text.HTML.TagSoup
 import Prelude hiding (concat,length,take)
 
@@ -29,5 +29,5 @@ testLink target (TagOpen "a" attrs) = any (testHrefBeginning target) attrs
 testLink target _                   = False
 
 testHrefBeginning :: Text -> (Text, Text) -> Bool
-testHrefBeginning target ("href", href) = target == (take (length target) href)
+testHrefBeginning target ("href", href) = target `isPrefixOf` href
 testHrefBeginning _      _              = False
