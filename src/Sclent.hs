@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main where
 
+import Control.Applicative ((<$>))
 import Da.Http (fetchLinks)
 import Data.Text (Text(..), pack)
 import Service.CrawlerService
@@ -9,7 +10,7 @@ import System.Exit
 
 args :: IO [Text]
 args = do
-  a <- getArgs >>= return . (map pack)
+  a <- (map pack) <$> getArgs
   if (length a) < 2
     then putStrLn "usage: sclent <target> <source1> <source2> ..." >> exitFailure
     else return a
