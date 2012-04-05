@@ -13,10 +13,12 @@ executable sclent
   build-depends:       base == 4.3.1.0
                       ,bytestring == 0.9.1.10
                       ,download-curl == 0.1.4
+                      ,enumerator == 0.4.18
                       ,HTTP == 4000.2.2
                       ,network == 2.3.0.11
                       ,tagsoup == 0.12.6
                       ,text == 0.11.1.13
+                      ,transformers == 0.2.2.0
 
 executable run_tests
   main-is:             RunTests.hs
@@ -25,8 +27,10 @@ executable run_tests
   build-depends:       base == 4.3.1.0
                       ,bytestring == 0.9.1.10
                       ,download-curl == 0.1.4
+                      ,enumerator == 0.4.18
                       ,HTTP == 4000.2.2
                       ,HUnit == 1.2.4.2
                       ,network == 2.3.0.11
                       ,tagsoup == 0.12.6
                       ,text == 0.11.1.13
+                      ,transformers == 0.2.2.0
