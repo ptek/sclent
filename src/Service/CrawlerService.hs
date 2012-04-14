@@ -3,12 +3,11 @@ module Service.CrawlerService (
   runCrawler
 ) where
 
-import Control.Applicative ((<$>))
 import Control.Monad.IO.Class
-import Data.Enumerator (Iteratee(..), ($$), (>==>), run_, enumList)
+import Data.Enumerator (Iteratee(..), ($$), run_, enumList)
 import qualified Data.Enumerator.List as EL
 import Data.List ((\\),nub)
-import Data.Text (Text(..))
+import Data.Text (Text)
 import Text.HTML.TagSoup (Tag(..))
 import Model.Crawler
 

@@ -4,9 +4,9 @@ module Model.Crawler (
  ,findLocalLinks
  ) where
 
-import Data.Text (Text(..),concat,length,take,isPrefixOf)
+import Data.Text (Text,concat,isPrefixOf)
 import Text.HTML.TagSoup
-import Prelude hiding (concat,length,take)
+import Prelude hiding (concat)
 
 findBackLink :: Text -> [Tag Text] -> Bool
 findBackLink target tags = any (testLink target) tags
@@ -26,7 +26,7 @@ findLocalLinks domain tags = findRelativeTags ++ findAbsoluteTags
 
 testLink :: Text -> Tag Text -> Bool
 testLink target (TagOpen "a" attrs) = any (testHrefBeginning target) attrs
-testLink target _                   = False
+testLink _      _                   = False
 
 testHrefBeginning :: Text -> (Text, Text) -> Bool
 testHrefBeginning target ("href", href) = target `isPrefixOf` href

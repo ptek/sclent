@@ -3,7 +3,7 @@ module Main where
 
 import Control.Applicative ((<$>))
 import Da.Http (fetchLinks)
-import Data.Text (Text(..), pack)
+import Data.Text (Text, pack)
 import Service.CrawlerService
 import System.Environment
 import System.Exit

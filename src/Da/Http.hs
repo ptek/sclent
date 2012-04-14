@@ -2,36 +2,43 @@
 module Da.Http (fetchLinks) where
 
 import Control.Applicative ((<$>))
-import Control.Exception.Base
-import Data.List (filter)
-import Data.Text (Text(..), pack, unpack)
+import Control.Monad.IO.Class
+import qualified Control.Exception    as E
+import qualified Data.ByteString      as B
+import qualified Data.ByteString.Lazy as BL
+import Data.Text (Text, unpack)
 import Data.Text.Encoding
-import Network.HTTP
-import Network.HTTP.Base (Request(..), Response(..), mkRequest, catchIO)
-import Network.HTTP.Headers (Header(..))
-import Network.Stream (Result)
-import Network.URI (parseURI)
+import Network.HTTP.Enumerator
+import Network.HTTP.Types (ResponseHeaders)
+import System.IO
 import Text.HTML.TagSoup
 
 fetchLinks :: Text -> IO [Tag Text]
-fetchLinks url = (filterLinksOnly . parseTags) <$> fetchPage url
+fetchLinks url = (filterLinksOnly . parseTags) <$> E.catch (downloadPage url) (anyIoError url)
 
-fetchPage :: Text -> IO Text
-fetchPage url = case parseURI (unpack url) of
-  Nothing -> return ""
-  Just u -> catchIO (simpleHTTP (mkRequest GET u) >>= fetchBody) report
+anyIoError :: Text -> E.IOException -> IO Text
+anyIoError url e = do
+  hPutStrLn stderr ("Warning: Couldn't fetch " ++(show url)++ ": " ++ (show e))
+  return ""
 
-report :: IOException -> IO Text
-report e = putStrLn ("Could not get "++(show e)) >> return ""
+downloadPage :: MonadIO m => Text -> m Text
+downloadPage url = do
+  url' <- liftIO $ parseUrl (unpack url)
+  r <- liftIO $ withManager $ httpLbsRedirect $ url' { decompress = browserDecompress }
+  return (body r)
 
-fetchBody :: (Result (Response String)) -> IO Text
-fetchBody res = case lookupHeader HdrContentType (headers res) of
-  Just "text/html" -> pack <$> getResponseBody res
-  otherwise        -> return ""
-  where
-    headers :: (Result (Response String)) -> [Header]
-    headers (Right rsp) = rspHeaders rsp
-    headers _           = []
+body :: Response -> Text
+body (Response sc h b) =
+  if (contentIsHtml h) && 200 <= sc && sc < 300
+    then decodeUtf8 $ toStrict b
+    else ""
+
+toStrict :: BL.ByteString -> B.ByteString
+toStrict = B.concat . BL.toChunks
+
+contentIsHtml :: ResponseHeaders -> Bool
+contentIsHtml hs = snd ((filter contentType hs) !! 0) == "text/html" where
+  contentType = ((==) "Content-Type") . fst
 
 filterLinksOnly :: [Tag Text] -> [Tag Text]
 filterLinksOnly tags = filter isLink tags
